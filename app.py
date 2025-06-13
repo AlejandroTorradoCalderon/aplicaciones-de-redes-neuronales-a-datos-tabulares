@@ -43,7 +43,7 @@ def load_artifacts():
         scaler = pickle.load(f)
 
     model = CreditRiskNNV2(input_dim=len(feature_names))
-    model.load_state_dict(torch.load("Outputs/best_credit_risk_model_v2.pth", map_location=torch.device("cpu")))
+    model = torch.load("Outputs/best_credit_risk_model_v2.pth", map_location=torch.device("cpu"))
     model.eval()
 
     scorecard_df = pd.read_csv("Outputs/credit_scorecard.csv")
