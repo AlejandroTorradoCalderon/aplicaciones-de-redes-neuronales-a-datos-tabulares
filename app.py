@@ -42,7 +42,7 @@ def load_artifacts():
     with open("Outputs/scaler.pkl", "rb") as f:
         scaler = pickle.load(f)
 
-    checkpoint = torch.load("Outputs/best_credit_risk_model_v2.pth", map_location=torch.device("cpu"))
+    checkpoint = torch.load("Outputs/best_credit_risk_model_v2.pth", map_location="cpu", weights_only=False)
     model.load_state_dict(checkpoint['model_state_dict'])
     model.eval()
 
