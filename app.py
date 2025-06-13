@@ -52,18 +52,16 @@ def load_artifacts():
 
 model, scaler, feature_names, scorecard_df = load_artifacts()
 
-def prob_to_score_scaled(prob, base_score=600, base_odds=1/20, pdo=50, min_score=300, max_score=850):
+# ------------ SCORE FUNCTION ACTUALIZADA (SIN REESCALADO) ------------
+def prob_to_score(prob, base_score=600, base_odds=1/20, pdo=50, min_score=300, max_score=850):
     prob = np.clip(prob, 1e-6, 1 - 1e-6)
     odds = (1 - prob) / prob
     factor = pdo / np.log(2)
     offset = base_score - factor * np.log(base_odds)
-    raw_scores = offset + factor * np.log(odds)
-    scaler = MinMaxScaler(feature_range=(min_score, max_score))
-    scores_scaled = scaler.fit_transform(raw_scores.reshape(-1, 1)).flatten()
-    return scores_scaled
+    raw_score = offset + factor * np.log(odds)
+    return np.clip(raw_score, min_score, max_score)
 
 # ------------ VARIABLES Y DESCRIPCIONES ------------
-
 categorical_features = {
     "home_ownership": ["MORTGAGE", "NONE", "OTHER", "OWN", "RENT"],
     "verification_status": ["Source Verified", "Verified"],
@@ -115,40 +113,25 @@ etiquetas_es = {
     "application_type": "Tipo de solicitud"
 }
 
-# Traducción de opciones categóricas (es -> en)
 traducciones_categoricas = {
     "home_ownership": {
-        "Hipoteca": "MORTGAGE",
-        "Ninguna": "NONE",
-        "Otra": "OTHER",
-        "Propia": "OWN",
-        "Arriendo": "RENT"
+        "Hipoteca": "MORTGAGE", "Ninguna": "NONE", "Otra": "OTHER", "Propia": "OWN", "Arriendo": "RENT"
     },
     "verification_status": {
-        "Fuente verificada": "Source Verified",
-        "Verificado": "Verified"
+        "Fuente verificada": "Source Verified", "Verificado": "Verified"
     },
     "purpose": {
-        "Tarjeta de crédito": "credit_card",
-        "Consolidación de deudas": "debt_consolidation",
-        "Educación": "educational",
-        "Mejoras del hogar": "home_improvement",
-        "Casa": "house",
-        "Compra mayor": "major_purchase",
-        "Gastos médicos": "medical",
-        "Mudanza": "moving",
-        "Otro": "other",
-        "Energía renovable": "renewable_energy",
-        "Pequeño negocio": "small_business",
-        "Vacaciones": "vacation",
-        "Boda": "wedding"
+        "Tarjeta de crédito": "credit_card", "Consolidación de deudas": "debt_consolidation",
+        "Educación": "educational", "Mejoras del hogar": "home_improvement", "Casa": "house",
+        "Compra mayor": "major_purchase", "Gastos médicos": "medical", "Mudanza": "moving",
+        "Otro": "other", "Energía renovable": "renewable_energy", "Pequeño negocio": "small_business",
+        "Vacaciones": "vacation", "Boda": "wedding"
     },
     "application_type": {
         "Individual": "INDIVIDUAL"
     },
     "addr_state": {state: state for state in categorical_features["addr_state"]}
 }
-
 
 # ------------ GESTIÓN DE PÁGINA Y FORMULARIO ------------
 all_features = numerical_features + list(categorical_features.keys())
@@ -212,7 +195,7 @@ if st.session_state.page == total_pages - 1 and "submit" in locals() and submit:
 
     with torch.no_grad():
         prob = model(X_tensor).item()
-    score = prob_to_score_scaled(np.array([prob]))[0]
+    score = prob_to_score(prob)
 
     st.markdown("### 🎯 Resultado del análisis")
     col_left, col_center, col_right = st.columns([1, 2, 1])
