@@ -36,17 +36,17 @@ class CreditRiskNNV2(torch.nn.Module):
 
 @st.cache_resource
 def load_artifacts():
-    with open("features.pkl", "rb") as f:
+    with open("Outputs/features.pkl", "rb") as f:
         feature_names = pickle.load(f)
 
-    with open("scaler.pkl", "rb") as f:
+    with open("Outputs/scaler.pkl", "rb") as f:
         scaler = pickle.load(f)
 
     model = CreditRiskNNV2(input_dim=len(feature_names))
-    model.load_state_dict(torch.load("best_credit_risk_model_v2.pth", map_location=torch.device("cpu")))
+    model.load_state_dict(torch.load("Outputs/best_credit_risk_model_v2.pth", map_location=torch.device("cpu")))
     model.eval()
 
-    scorecard_df = pd.read_csv("credit_scorecard.csv")
+    scorecard_df = pd.read_csv("Outputs/credit_scorecard.csv")
 
     return model, scaler, feature_names, scorecard_df
 
