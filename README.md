@@ -11,4 +11,4 @@ En este repositorio se encuentra el código en python utilizado para el trabajo 
 
 ## Contenido del repositorio:
 - En 'app.py' se encuentra el código de la página web.
-- 
+- En 'Notebook 1.ipynb' se encuentra el la documentación formato markdown, los 2 modelos realizados y sus respectivos análisis
