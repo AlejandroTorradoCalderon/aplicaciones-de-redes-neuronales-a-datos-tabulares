@@ -10,6 +10,20 @@ from sklearn.preprocessing import MinMaxScaler
 st.set_page_config(page_title="Score Crediticio", layout="wide")
 st.title("🔍 Calcula tu Score Crediticio")
 st.markdown("Ingresa tus datos y descubre tu nivel de riesgo comparado con la población real del dataset.")
+# ------------ ENLACES SUPERIORES ------------
+col_video, col_blog = st.columns([1, 1])
+
+with col_video:
+    st.markdown(
+        '[📺 Ver video tutorial](https://youtu.be/7wnBZf6VNOQ)',
+        unsafe_allow_html=True
+    )
+with col_blog:
+    st.markdown(
+        '[📘 Leer blog del proyecto](https://deepnote.com/app/universidad-nacional-de-colombia-9838/Trabajo-2-Aplicaciones-de-redes-neuronales-a-datos-tabulares-77a41e01-1af5-497d-ab75-3b861a832776?utm_content=77a41e01-1af5-497d-ab75-3b861a832776&__run=true)',
+        unsafe_allow_html=True
+    )
+
 
 # ------------ CARGA DE MODELO Y UTILIDADES ------------
 class CreditRiskNNV2(torch.nn.Module):
